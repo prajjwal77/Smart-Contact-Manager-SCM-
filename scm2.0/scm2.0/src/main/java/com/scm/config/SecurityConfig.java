@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,8 +63,10 @@ public class SecurityConfig {
             formLogin.loginProcessingUrl("/authenticate");
             formLogin.successForwardUrl("/user/dashboard");
             formLogin.failureForwardUrl("/login?error=true");
-            //formLogin.defaultSuccessUrl("/");
+            //formLogin.defaultSuccessUrl("/home");
             formLogin.usernameParameter("email");
+            formLogin.passwordParameter("password");
+            
             // formLogin.failureHandler(new AuthenticationFailureHandler() {
 
             //     @Override
@@ -85,7 +88,12 @@ public class SecurityConfig {
                 
             // });
         });
-        
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.logout(logoutForm ->{
+            logoutForm.logoutUrl("/do-logout");
+            logoutForm.logoutSuccessUrl("/login?logout=true");
+        });
+
         //form default login
         //agar hame kuch bhi karna hua to ham yaha aayenge : form login se relatedcode
 
